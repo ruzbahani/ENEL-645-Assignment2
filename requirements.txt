@@ -1,1 +1,11 @@
 # Python package dependencies
+os
+numpy
+torch
+torchvision
+pandas
+matplotlib
+seaborn
+scikit-learn
+tqdm
+PIL
