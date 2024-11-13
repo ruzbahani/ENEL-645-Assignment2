@@ -1,8 +1,7 @@
-# Project overview and setup instructions
 
-# Garbage Image Classification with Combined Image and Text Features
+# Garbage Classification Model
 
-This project implements a deep learning model for classifying garbage images based on both image data and textual descriptions. The model utilizes a pretrained ResNet18 for image feature extraction and an LSTM network to process text descriptions, allowing it to make more accurate classifications.
+This project implements a model for classifying garbage images into distinct categories (Black, Green, Blue, and TTR) using a multimodal approach in PyTorch. The model combines visual data with textual descriptions, leveraging both to improve classification accuracy.
 
 ## Table of Contents
 - [Project Overview](#project-overview)
@@ -16,90 +15,55 @@ This project implements a deep learning model for classifying garbage images bas
 - [Future Improvements](#future-improvements)
 
 ## Project Overview
-The primary goal of this project is to classify images of garbage based on both visual and textual data. The dataset contains images categorized into four classes: `Black`, `Green`, `Blue`, and `TTR`. Each image is labeled according to its category and includes a description that helps further define its characteristics.
-
-### Key Features
-- Uses a **pretrained ResNet18** model for image feature extraction.
-- Processes text descriptions with an **LSTM network**.
-- Combines features from both image and text inputs to make final predictions.
-- Implements **data augmentation**, **weight initialization**, and **learning rate scheduling** to improve model performance and reduce overfitting.
+This project aims to develop an effective classification model for garbage sorting by using both image and text data. The model is optimized with various techniques, including data augmentation, to achieve improved accuracy and generalization.
 
 ## Directory Structure
-```
-.
-├── data/
-│   ├── CVPR_2024_dataset_Train/
-│   ├── CVPR_2024_dataset_Val/
-│   └── CVPR_2024_dataset_Test/
-├── Best-Model/
-│   └── best_model.pth
-├── main.py               # Main code file for training and evaluation
-├── README.md             # Project documentation
-└── requirements.txt      # Python dependencies
-```
+The project code is implemented in a single script, `main.py`, which includes all necessary steps for data handling, model setup, training, and evaluation.
+
+- `main.py`: Contains all code for loading the dataset, defining the model, training, and evaluation.
+- `README.md`: Provides an overview and instructions for the project.
 
 ## Requirements
-The project requires the following Python libraries:
-- `torch`
-- `torchvision`
-- `pandas`
-- `scikit-learn`
-- `matplotlib`
-- `seaborn`
-- `Pillow`
-
-Install dependencies with:
+To install the required packages, clone the repository and run:
 ```bash
 pip install -r requirements.txt
 ```
 
 ## Data Preparation
-1. Organize your dataset folders as follows:
-   ```
-   data/
-   ├── CVPR_2024_dataset_Train/
-   ├── CVPR_2024_dataset_Val/
-   └── CVPR_2024_dataset_Test/
-   ```
-   Each folder should contain subfolders (`Black`, `Green`, `Blue`, `TTR`), and each subfolder should contain images of the respective category.
-   
-2. The model extracts image paths, labels, and descriptions based on the folder and filename structure.
+1. **Dataset Structure**: Images are organized into folders by category (e.g., `Black`, `Green`, `Blue`, and `TTR`).
+2. **Text Descriptions**: Textual information is extracted from filenames.
+3. **Data Augmentation**: The training images undergo transformations such as cropping, rotation, color jittering, and normalization to enhance generalization.
 
 ## Model Architecture
-The model uses a **Combined Model** class with two main components:
-- **Image Branch**: ResNet18 (pretrained on ImageNet) is used to extract visual features. Layers 3 and 4 are unfrozen to allow fine-tuning on the dataset.
-- **Text Branch**: A simple LSTM network processes the descriptions, embedding the text and passing it through LSTM layers to obtain textual features.
-
-The outputs from both branches are concatenated and passed through fully connected layers for classification.
-
-### Weight Initialization
-The weights of the fully connected and LSTM layers are initialized using Xavier and Orthogonal initializations to enhance model performance and convergence.
+- **Image Encoder**: A ResNet18 pretrained on ImageNet fine-tuned for feature extraction from garbage images.
+- **Text Encoder**: A bidirectional LSTM with an attention mechanism to emphasize relevant words in text descriptions.
+- **Combined Model**: Merges image and text features through a fully connected layer to make final predictions.
 
 ## Training
-Run the training with:
+- **Device Selection**: Automatically uses GPU if available; otherwise, defaults to CPU.
+- **Training Process**: The model is trained using multiple epochs and techniques like early stopping to avoid overfitting.
+- **Hyperparameters**: Configurations such as batch size, learning rate, and dropout rate are adjusted for optimal performance.
+
+To train the model, run:
 ```bash
 python main.py
 ```
 
-### Training Parameters
-- Optimizer: Adam with weight decay of `0.001`
-- Learning Rate Scheduler: `StepLR` with `step_size=5` and `gamma=0.5`
-- Dropout rate: `0.8` to prevent overfitting
-
-The model saves the best-performing weights based on validation loss in the `Best-Model/` folder.
-
 ## Evaluation
-The evaluation includes:
-- **Accuracy** and **F1 score** for training, validation, and test sets
-- **Confusion Matrix** and **Classification Report** to understand classification performance per class
+After training, the model’s performance is evaluated using accuracy and F1 score metrics across training, validation, and test sets.
 
-After training, the model switches to evaluation mode, and predictions are compared to the actual labels on the test set.
+- **Confusion Matrix**: Visualizes model performance across categories.
+- **Classification Report**: Provides detailed precision, recall, and F1 score per class.
 
 ## Results
-Training and validation metrics, including loss, accuracy, and F1 scores, are visualized after each epoch to monitor model performance. The best-performing model weights are saved based on validation loss.
+1. **Overall Accuracy and F1 Score**: The model's best accuracy and F1 score across different categories.
+2. **Visualization**: Includes plots for training and validation losses, accuracy, and F1 scores across epochs.
 
 ## Future Improvements
-- **Further fine-tuning** with additional layers in ResNet.
-- **Experimenting with other architectures** like MobileNet for computational efficiency.
-- **Enhancing data augmentation** for better generalization.
-- **Exploring attention mechanisms** to focus on relevant parts of both image and text features.
+- **Dataset Balancing**: Implementing advanced balancing techniques for the classes in the dataset.
+- **Additional Features**: Experiment with adding more features from textual data.
+- **Hyperparameter Tuning**: Further exploration of hyperparameters to enhance performance.
+
+---
+
+By following these steps, you can replicate the training and evaluation process for the garbage classification model and explore potential improvements for future development.
